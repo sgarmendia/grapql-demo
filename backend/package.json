@@ -1,0 +1,25 @@
+{
+  "name": "grapql-demo",
+  "version": "1.0.0",
+  "description": "A demo for basic graphql capabilities",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
+  },
+  "keywords": [
+    "graphql",
+    "docker",
+    "express",
+    "apollo"
+  ],
+  "author": "SG",
+  "license": "ISC",
+  "dependencies": {
+    "@apollo/server": "^4.11.2",
+    "body-parser": "^1.20.3",
+    "express": "^4.21.1",
+    "mongodb": "^6.11.0",
+    "pg": "^8.13.1"
+  }
+}
