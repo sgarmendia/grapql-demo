@@ -7,7 +7,7 @@ WORKDIR /usr/src/app
 # Copy package.json for dependency installation
 COPY package.json  ./
 
-# Install dependencies using Yarn
+# Install dependencies
 RUN npm install
 
 # Copy the rest of the application code into the container

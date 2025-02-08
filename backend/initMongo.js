@@ -15,14 +15,22 @@ async function initMongo() {
     // Check if the collection already has the data
     const existingDocs = await documentsCollection.find({}).toArray();
 
-    if (existingDocs.length === 0) {
+    if (!existingDocs[0]?.content || !existingDocs[0]?.author) {
       console.log("Initializing MongoDB with sample data...");
+
+      await documentsCollection.deleteMany({});
       
       // Insert initial data
       await documentsCollection.insertMany([
-        { content: "Document 1" },
-        { content: "Document 2" },
-        { content: "Document 3" },
+        { content: "Mongo Document 1 content",
+          author: "Ainara"
+        },
+        { content: "Mongo Document 2 content",
+          author: "Patricia"
+        },
+        { content: "Mongo Document 3 content",
+          author: "Silvia"
+        },
       ]);
 
       console.log("MongoDB initialized successfully.");

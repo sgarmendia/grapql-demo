@@ -14,7 +14,7 @@ const UserType = new GraphQLObjectType({
 const DocumentType = new GraphQLObjectType({
   name: "Document",
   fields: {
-    id: { type: GraphQLString },
+    author: { type: GraphQLString },
     content: { type: GraphQLString },
   },
 });
@@ -38,8 +38,13 @@ module.exports = (pgPool, mongoDb) => {
       },
       documents: {
         type: new GraphQLList(DocumentType),
-        resolve: async () => {
-          return await mongoDb.collection("documents").find().toArray();
+        args: {
+          author: { type: GraphQLString },
+        },
+        resolve: async (parent, args) => {
+          return await mongoDb.collection("documents").find(
+            args.author ? { author: args.author } : {}
+          ).toArray();
         },
       },
     },
