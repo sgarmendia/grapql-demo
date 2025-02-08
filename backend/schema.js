@@ -27,24 +27,40 @@ module.exports = (pgPool, mongoDb) => {
       users: {
         type: new GraphQLList(UserType),
         args: {
-          name: { type: GraphQLString },
+          names: { type: new GraphQLList(GraphQLString) }, // Accept an array of names
         },
         resolve: async (parent, args) => {
-          const query = `SELECT * FROM users WHERE name ILIKE $1`;
-          const values = [`%${args.name || ''}%`];
-          const res = await pgPool.query(query, values);
+          if (!args.names || args.names.length === 0) {
+            // Fetch all users if no names are provided
+            const query = `SELECT * FROM users`;
+            const res = await pgPool.query(query);
+            return res.rows;
+          }
+
+          // Dynamically construct the IN clause for filtering
+          const placeholders = args.names.map((_, index) => `$${index + 1}`).join(", ");
+          const query = `SELECT * FROM users WHERE name IN (${placeholders})`;
+          const res = await pgPool.query(query, args.names);
           return res.rows;
         },
       },
       documents: {
         type: new GraphQLList(DocumentType),
         args: {
-          author: { type: GraphQLString },
+          author: { type: GraphQLString }, // Filter by author
+          content: { type: GraphQLString }, // Optional filter by content
         },
         resolve: async (parent, args) => {
-          return await mongoDb.collection("documents").find(
-            args.author ? { author: args.author } : {}
-          ).toArray();
+          const filter = {};
+
+          if (args.author) {
+            filter.author = args.author;
+          }
+          if (args.content) {
+            filter.content = { $regex: args.content, $options: "i" }; // Case-insensitive regex match
+          }
+
+          return await mongoDb.collection("documents").find(filter).toArray();
         },
       },
     },
