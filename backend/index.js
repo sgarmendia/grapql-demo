@@ -1,14 +1,16 @@
-const express = require("express");
-const { ApolloServer } = require("@apollo/server");
-const { expressMiddleware } = require("@apollo/server/express4");
-const bodyParser = require("body-parser");
-const { Pool } = require("pg");
-const { MongoClient } = require("mongodb");
-const schema = require("./schema");
+import express from "express";
+import { ApolloServer } from "@apollo/server";
+import { expressMiddleware } from "@apollo/server/express4";
+import bp from "body-parser";
+import pg from "pg";
+import { MongoClient } from "mongodb";
+import schema from "./schema.js";
 
 const app = express();
 
 // PostgreSQL
+const { Pool } = pg;
+
 const pgPool = new Pool({
   user: "user",
   host: "postgres",
@@ -29,7 +31,7 @@ async function startServer() {
   });
 
   await server.start();
-  app.use(bodyParser.json());
+  app.use(bp.json());
   app.use("/graphql", expressMiddleware(server));
   app.listen(4000, () => console.log("GraphQL Server running on http://localhost:4000/graphql"));
 }

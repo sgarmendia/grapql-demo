@@ -1,11 +1,4 @@
-const {
-  GraphQLObjectType,
-  GraphQLSchema,
-  GraphQLString,
-  GraphQLList,
-  GraphQLNonNull,
-  GraphQLID,
-} = require("graphql");
+import { GraphQLObjectType, GraphQLSchema, GraphQLString, GraphQLList, GraphQLNonNull, GraphQLID } from "graphql";
 
 // Define User Type (Postgres)
 const UserType = new GraphQLObjectType({
@@ -28,7 +21,7 @@ const DocumentType = new GraphQLObjectType({
 });
 
 // Define Queries and Mutations
-module.exports = (pgPool, mongoDb) => {
+export default (pgPool, mongoDb) => {
   // Root Query
   const RootQuery = new GraphQLObjectType({
     name: "RootQueryType",
