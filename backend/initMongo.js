@@ -1,11 +1,6 @@
-import { MongoClient } from "mongodb";
-
-const MONGO_URI = "mongodb://mongodb:27017";
 const DATABASE = "demo";
 
-async function initMongo() {
-  const client = new MongoClient(MONGO_URI);
-
+export async function initMongo(client) {
   try {
     await client.connect();
     const db = client.db(DATABASE);
@@ -37,11 +32,12 @@ async function initMongo() {
     } else {
       console.log("MongoDB already initialized. Skipping data insertion.");
     }
+
+    return db;
   } catch (err) {
+    if (client) {
+      await client.close();
+    }
     console.error("Error initializing MongoDB:", err);
-  } finally {
-    await client.close();
   }
 }
-
-initMongo();

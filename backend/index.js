@@ -4,7 +4,10 @@ import { expressMiddleware } from "@apollo/server/express4";
 import bp from "body-parser";
 import pg from "pg";
 import { MongoClient } from "mongodb";
+import { initMongo } from "./initMongo.js";
 import schema from "./schema.js";
+
+const MONGO_URI = "mongodb://mongodb:27017";
 
 const app = express();
 
@@ -20,11 +23,10 @@ const pgPool = new Pool({
 });
 
 // MongoDB
-const mongoClient = new MongoClient("mongodb://mongodb:27017");
+const mongoClient = new MongoClient(MONGO_URI);
 
 async function startServer() {
-  await mongoClient.connect();
-  const mongoDb = mongoClient.db("demo");
+  const mongoDb = await initMongo(mongoClient);
 
   const server = new ApolloServer({
     schema: schema(pgPool, mongoDb),
